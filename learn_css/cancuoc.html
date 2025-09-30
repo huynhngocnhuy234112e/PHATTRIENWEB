@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Căn cước công dân</title>
+    <style>
+        .cancuoc {
+            cursor: pointer;
+            width: 400px; /* thêm width cho rõ ràng */
+        }
+        .cancuoc img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        /* Ẩn ảnh mặt sau lúc đầu */
+        .cancuoc .back {
+            display: none;
+        }
+        /* Hover vào div .cancuoc thì đổi ảnh */
+        .cancuoc:hover .front {
+            display: none;
+        }
+        .cancuoc:hover .back {
+            display: block;
+        }
+        
+    </style>
+</head>
+<body>
+    <h2>sản phẩm hairwrap</h2>
+    <div class="cancuoc">
+        <img src="images/Gemini_Generated_Image_goruqtgoruqtgoru.png" class="front">
+        <img src="images/Gemini_Generated_Image_uawomruawomruawo.png" class="back">
+    </div>
+</body>
+</html>

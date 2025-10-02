@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HUYNH NGOC NHU Y - Register - Jackson Electronics</title>
+</head>
+<body style="background-color: #ADD8E6; font-family: Arial;">
+    <div style="text-align: center; margin-bottom: 10px;">
+        <img src="images/Jackson.gif" alt="Logo">
+    </div>
+
+    <h2 style="text-align: center;">Registration Form</h2>
+    <p style="text-align: center;">Register your Jackson Electronics product here</p>
+
+    <form id="regForm" style="width: 600px; margin: auto; background-color: #E0FFFF; padding: 20px; border: 1px solid black;">
+
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname"> 
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname"><br><br>
+
+        <label for="addr1">Address #1:</label>
+        <input type="text" id="addr1" name="addr1"><br><br>
+
+        <label for="addr2">Address #2:</label>
+        <input type="text" id="addr2" name="addr2"><br><br>
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city">
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" size="5">
+        <label for="zip">Zip:</label>
+        <input type="text" id="zip" name="zip" size="8"><br><br>
+
+        <label for="country">Country:</label>
+        <select name="country" id="country">
+            <option>United States</option>
+            <option>Canada</option>
+            <option>UK</option>
+            <option>Other</option>
+        </select><br><br>
+        <hr>
+
+        <label for="product">Product:</label>
+        <select name="product" id="product">
+            <option>ScanMaster</option>
+            <option>Printer</option>
+            <option>Monitor</option>
+        </select><br><br>
+
+        <label for="purchased">Date Purchased:</label>
+        <input type="date" id="purchased" name="purchased"><br><br>
+
+        <label for="serial">Serial #:</label>
+        <input type="text" id="serial" name="serial"><br><br>
+
+        Used for:<br>
+        <input type="radio" id="home" name="use" value="Home"> <label for="home">Home</label>
+        <input type="radio" id="business" name="use" value="Business"> <label for="business">Business</label>
+        <input type="radio" id="government" name="use" value="Government"> <label for="government">Government</label>
+        <input type="radio" id="school" name="use" value="School"> <label for="school">Educational Institution</label>
+        <input type="radio" id="otherUse" name="use" value="Other"> <label for="otherUse">Other</label>
+        <br><br>
+
+        System (check all that apply):<br>
+        <input type="checkbox" id="win" name="sys" value="Windows"> <label for="win">Windows</label>
+        <input type="checkbox" id="mac" name="sys" value="Macintosh"> <label for="mac">Macintosh</label>
+        <input type="checkbox" id="unix" name="sys" value="UNIX"> <label for="unix">UNIX</label>
+        <input type="checkbox" id="otherSys" name="sys" value="Other"> <label for="otherSys">Other</label>
+        <br><br>
+        <hr>
+
+        <label for="comments">Comments:</label><br>
+        <textarea id="comments" name="comments"></textarea><br><br>
+
+        <input type="submit" value="Click to register">
+        <input type="reset" value="Click to cancel">
+
+    </form>
+
+    <script>
+        document.getElementById("regForm").addEventListener("submit", function(e){
+            e.preventDefault();
+            alert("Registration Successful!");
+        });
+    </script>
+</body>
+</html>

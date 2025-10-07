@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HUYNH NGOC NHU Y-Online Classifieds Search Form</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background:#fff; }
+  .panel {
+    width: 650px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #CCFFFF;
+    border: 2px solid #3399FF;
+  }
+  h2 { color: red; }
+  .q { margin: 14px 0; }
+  .q b { display:block; margin-bottom: 6px; }
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; }
+  input[type="text"] { padding: 4px; }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h2>Online Classifieds Search Form</h2>
+  <hr>
+  <form id="classifiedForm" action="search.html" method="get">
+    <div class="q">
+      <b>1) Search for a classified in the following sections:</b>
+      <div class="cols-2">
+        <label><input type="radio" name="section" value="Employment"> Employment</label>
+        <label><input type="radio" name="section" value="Personal"> Personal</label>
+        <label><input type="radio" name="section" value="For Sale"> For Sale</label>
+        <label><input type="radio" name="section" value="Miscellaneous"> Miscellaneous</label>
+        <label><input type="radio" name="section" value="Housing"> Housing</label>
+        <label><input type="radio" name="section" value="All"> All of the above</label>
+      </div>
+    </div>
+
+    <div class="q">
+      <b>2) Search the following publications:</b>
+      <div class="cols-2">
+        <label><input type="checkbox" name="pub" value="Midwest Times" checked> Midwest times</label>
+        <label><input type="checkbox" name="pub" value="Modern News"> Modern News</label>
+        <label><input type="checkbox" name="pub" value="Employment Today"> Employment Today</label>
+        <label><input type="checkbox" name="pub" value="Great Lakes Classifieds" checked> Great Lakes Classifieds</label>
+        <label><input type="checkbox" name="pub" value="Middleton Daily"> Middleton Daily</label>
+        <label><input type="checkbox" name="pub" value="Cashtown Daily News"> Cashtown Daily News</label>
+      </div>
+    </div>
+    <div class="q">
+      <b>3) From</b>
+      <input type="text" name="from" placeholder="mm/dd/yy">
+      to
+      <input type="text" name="to" placeholder="mm/dd/yy">
+    </div>
+    <div class="q">
+      <b>4) Enter a few keywords to describe the classified.</b>
+      <input type="text" name="keywords" style="width:100%;">
+    </div>
+    <div class="q">
+      <b>5) Click one of the options below:</b><br><br>
+      <input type="image" src="Search.gif" alt="Search" name="search">
+      <a href="help.html">
+        <img src="Help.gif" alt="Help">
+      </a>
+      <input type="reset" value="" style="background:url('Cancel.gif'); width:45px; height:45px; border:none; cursor:pointer;">
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

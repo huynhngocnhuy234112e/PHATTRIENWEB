@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html >
+<head>
+<title>Newborn Registration-HUYNH NGOC NHU Y</title>
+<style>
+  :root{
+    --teal:#0f7c7a;
+    --white:#ffffff;
+    --border:#004f4e;
+  }
+
+  html,body{
+    margin:0;
+    font-family: Georgia,"Times New Roman",serif;
+    background:var(--teal);      
+    color:#fff;
+  }
+
+  .wrap{ width: 820px; margin: 22px auto; }
+
+  .header{ text-align:center; margin-bottom: 8px; }
+  .header img{ max-width: 640px; height:auto; }
+
+  h1{
+    text-align:center;
+    font-size: 40px;
+    margin: 10px 0 24px;
+    letter-spacing:.5px;
+  }
+
+  form{ font-size: 17px; }
+  .row{ display:flex; align-items:center; gap:10px; margin: 10px 0; }
+  .row.label-top{ align-items:flex-start; }
+
+  label{
+    display:inline-block;
+    width: 260px;                
+  }
+
+  input[type="text"], select{
+    font-family: inherit;
+    font-size: 16px;
+    padding: 5px 6px;
+    border: 1px solid var(--border);
+    background: #eaffff;
+    color: #003b3b;
+    border-radius: 3px;
+  }
+  .date{ width:150px; }
+  .short{ width:140px; }
+  .mid{ width: 260px; }
+
+  select[multiple]{
+    width: 260px;
+    height: 100px;
+  }
+
+  .buttons{ text-align:center; margin-top: 16px; }
+  .btn{
+    background:#e9e9e9; color:#000; border:1px solid #333;
+    padding: 6px 14px; margin: 0 8px; font-weight: bold; border-radius:4px;
+    cursor:pointer;
+  }
+  .btn:hover{ filter: brightness(.95); }
+</style>
+
+<script>
+  function registerForm(){
+    alert("Registration saved successfully! 👶");
+  }
+  function cancelForm(){
+    document.getElementById("regForm").reset();
+    alert("Form has been cleared.");
+  }
+</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <img src="images/Logo.gif" alt="Hospital Logo">
+    </div>
+
+    <h1>Newborn Registration</h1>
+
+    <form id="regForm">
+      <div class="row">
+        <label for="date">Date:</label>
+        <input id="date" type="text" class="date" placeholder="mm/dd/yy">
+      </div>
+
+      <div class="row">
+        <label>1) Infant's first name:</label>
+        <input type="text" class="mid" aria-label="Infant first name">
+        <span>Last:</span>
+        <input type="text" class="mid" aria-label="Infant last name">
+      </div>
+
+      <div class="row">
+        <label>2) Medical Record #:</label>
+        <input type="text" class="mid">
+      </div>
+
+      <div class="row">
+        <label>3) Date of birth:</label>
+        <input type="text" class="date" placeholder="mm/dd/yy">
+      </div>
+
+      <div class="row">
+        <label>4) Birth weight:</label>
+        <input type="text" class="short">
+      </div>
+
+      <div class="row">
+        <label>5) APGAR score:</label>
+        <input type="text" class="short">
+      </div>
+
+      <div class="row">
+        <label>6) Mother's first name:</label>
+        <input type="text" class="mid" aria-label="Mother first name">
+        <span>Last:</span>
+        <input type="text" class="mid" aria-label="Mother last name">
+      </div>
+
+      <div class="row">
+        <label>7) Father's first name:</label>
+        <input type="text" class="mid" aria-label="Father first name">
+        <span>Last:</span>
+        <input type="text" class="mid" aria-label="Father last name">
+      </div>
+
+      <div class="row label-top">
+        <label>8) Physician (check all that apply):</label>
+        <select multiple aria-label="Physician list">
+          <option>Dr. Warren Albert</option>
+          <option>Dr. Maria Alvarez</option>
+          <option>Dr. Karen Brinkman</option>
+          <option>Dr. Micheal Kerry</option>
+        </select>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="btn" onclick="registerForm()">Register</button>
+        <button type="button" class="btn" onclick="cancelForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Headphone Choice – Smart Pricing Prototype</title>
+  <style>
+    :root{ --bg:#0e0f14; --panel:#161922; --text:#e9ecf1; --muted:#a8b0be; --border:#242838; --accent:#6ea8ff; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b0c11;color:var(--text)}
+    header{position:sticky;top:0;background:#0b0c11cc;backdrop-filter:blur(6px);border-bottom:1px solid #1a1d2b}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted)}
+    main{padding:20px}
+    .grid{display:grid;gap:12px}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    .panel{background:#111423;border:1px solid var(--border);border-radius:12px;padding:14px}
+    .btn{padding:10px 14px;border:1px solid #2a2e44;border-radius:10px;background:#171a2a;color:#fff;cursor:pointer}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .btn.primary{background:var(--accent);border-color:var(--accent);color:#0b0c11;font-weight:700}
+    .btn.ghost{background:transparent}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .choice{background:#0f1220;border:1px solid #232742;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .thumb{height:90px;border-radius:10px;background:linear-gradient(90deg,#1b1f33,#0f1220);border:1px dashed #2a2f4a;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px}
+    .attrs{font-size:13px}
+    .price{font-weight:800}
+    .pick{display:flex;align-items:center;gap:8px;margin-top:auto}
+    .none{border:1px dashed #2a2f4a;background:transparent;color:var(--muted);text-align:center;justify-content:center}
+    .hidden{display:none}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{border-bottom:1px solid #21253a;padding:8px;text-align:left}
+    .section-title{margin:0 0 10px;font-size:16px}
+    .pill{display:inline-block;background:#1a1f36;border:1px solid #2a2f4a;border-radius:999px;padding:2px 8px;color:#cbd7ff;font-size:12px}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap}
+    .kpi .card{background:#101427;border:1px solid #222845;border-radius:10px;padding:10px 12px}
+    .big{font-weight:800;font-size:18px}
+    footer{color:var(--muted);text-align:center;padding:30px 0}
+    input[type="range"]{width:100%}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tabs button{padding:8px 10px;border-radius:8px;border:1px solid #2a2e44;background:#14172a;color:#cdd7ff}
+    .tabs button.active{background:var(--accent);color:#0b0c11;border-color:var(--accent);font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap row">
+      <h1>Smart Pricing – Headphone Choice Simulator</h1>
+      <span class="muted">Prototype có thể thao tác: khảo sát lựa chọn → xuất dữ liệu → mô phỏng đơn giản</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="tabs">
+      <button class="tabBtn active" data-tab="survey">1) Khảo sát</button>
+      <button class="tabBtn" data-tab="results">2) Kết quả</button>
+      <button class="tabBtn" data-tab="simulator">3) Mô phỏng</button>
+      <button class="tabBtn" data-tab="pricing">4) Quy tắc giá</button>
+    </div>
+
+    <!-- TAB 1: SURVEY -->
+    <section id="survey" class="panel">
+      <h2 class="section-title">Khảo sát lựa chọn (Choice Tasks)</h2>
+      <div class="row">
+        <button id="btnStart" class="btn primary">Bắt đầu khảo sát</button>
+        <div id="progress" class="pill hidden">Tiến độ: <span id="pNow">0</span>/<span id="pTotal">0</span></div>
+        <div class="muted">Mỗi bài gồm 3 phương án + 1 lựa chọn "Không chọn"</div>
+      </div>
+      <div id="taskWrap" class="grid cols-3" style="margin-top:12px"></div>
+      <div class="row" style="margin-top:12px">
+        <button id="btnNext" class="btn" disabled>Tiếp tục</button>
+        <button id="btnSkip" class="btn ghost" disabled>Bỏ qua bài này</button>
+      </div>
+    </section>
+
+    <!-- TAB 2: RESULTS -->
+    <section id="results" class="panel hidden">
+      <h2 class="section-title">Kết quả thu thập (tải xuống JSON/CSV)</h2>
+      <div class="row" style="margin-bottom:10px">
+        <button id="btnDownloadJson" class="btn">Tải JSON</button>
+        <button id="btnDownloadCsv" class="btn">Tải CSV</button>
+        <span class="pill">Số bài đã hoàn thành: <span id="doneCount">0</span></span>
+      </div>
+      <div style="max-height:340px;overflow:auto">
+        <table id="tblResults">
+          <thead>
+            <tr>
+              <th>task_id</th><th>selected_alt</th><th>none</th>
+              <th>decision_ms</th><th>hover_A</th><th>hover_B</th><th>hover_C</th>
+              <th>brand_A</th><th>battery_A</th><th>anc_A</th><th>price_A</th>
+              <th>brand_B</th><th>battery_B</th><th>anc_B</th><th>price_B</th>
+              <th>brand_C</th><th>battery_C</th><th>anc_C</th><th>price_C</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 3: SIMPLE SIMULATOR (toy) -->
+    <section id="simulator" class="panel hidden">
+      <h2 class="section-title">Mô phỏng thị phần (đơn giản)</h2>
+      <div class="grid cols-3">
+        <div class="panel">
+          <h3>Giá của sản phẩm ta</h3>
+          <input id="simPrice" type="range" min="1000000" max="4000000" step="50000" value="2490000" />
+          <div>Giá: <strong id="simPriceLabel">2,490,000đ</strong></div>
+          <p class="muted">Mô hình toy: Giá ↓ → thị phần ↑; có khử ồn & pin 15h tăng điểm.</p>
+        </div>
+        <div class="panel">
+          <h3>Giả định tính năng</h3>
+          <div class="row">
+            <label><input type="checkbox" id="simAnc" checked> Khử ồn</label>
+            <label><input type="checkbox" id="simBattery" checked> Pin 15 giờ</label>
+          </div>
+          <p class="muted">Đối thủ cố định: Apple 3.5tr (ANC, 6h); Sony 2.5tr (ANC, 10h).</p>
+        </div>
+        <div class="panel">
+          <h3>Kết quả (ước lượng)</h3>
+          <div class="kpi">
+            <div class="card"><div class="big" id="simShare">—%</div><div class="muted">Thị phần dự đoán</div></div>
+            <div class="card"><div class="big" id="simRev">—đ</div><div class="muted">Doanh thu/1000 KH</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: PRICING RULE (static template) -->
+    <section id="pricing" class="panel hidden">
+      <h2 class="section-title">Quy tắc định giá (mẫu xuất bản giao)</h2>
+      <pre id="ruleOut" style="white-space:pre-wrap"></pre>
+    </section>
+
+    <footer class="muted">Prototype: thao tác được, không cần backend. Dùng để demo luồng: thu thập → xem dữ liệu → mô phỏng → xuất rule.</footer>
+  </main>
+
+  <script>
+    // ------------------ DESIGN SPACE ------------------
+    const BRANDS = ["Sony","Apple","Thương hiệu Việt"];
+    const BATTERIES = ["6 giờ","10 giờ","15 giờ"];
+    const ANC = ["Không","Có"];
+    const PRICES = [1500000, 2500000, 3500000];
+
+    function makeDesign(nTasks=10){
+      const tasks=[]; const seen=new Set();
+      for(let t=0;t<nTasks;t++){
+        const alts=[]; let tries=0;
+        while(alts.length<3 && tries<100){ tries++;
+          const alt={
+            brand: BRANDS[Math.floor(Math.random()*BRANDS.length)],
+            battery: BATTERIES[Math.floor(Math.random()*BATTERIES.length)],
+            anc: ANC[Math.floor(Math.random()*ANC.length)],
+            price: PRICES[Math.floor(Math.random()*PRICES.length)],
+          };
+          const key = JSON.stringify(alt);
+          if(![...alts.map(a=>JSON.stringify(a)), ...seen].includes(key)){
+            alts.push(alt); seen.add(key);
+          }
+        }
+        tasks.push({task_id:t+1, alts});
+      }
+      return tasks;
+    }
+
+    // ------------------ SURVEY STATE ------------------
+    const state={ tasks:[], idx:0, startTs:null, hover:{A:0,B:0,C:0}, results:[] };
+
+    const elTaskWrap = document.getElementById('taskWrap');
+    const elBtnStart = document.getElementById('btnStart');
+    const elBtnNext  = document.getElementById('btnNext');
+    const elBtnSkip  = document.getElementById('btnSkip');
+    const elPNow = document.getElementById('pNow');
+    const elPTotal = document.getElementById('pTotal');
+    const elProgress = document.getElementById('progress');
+
+    elBtnStart.addEventListener('click', ()=>{ state.tasks=makeDesign(10); state.idx=0; state.results=[]; elPTotal.textContent=state.tasks.length; elProgress.classList.remove('hidden'); showTask(); });
+
+    function showTask(){
+      const task = state.tasks[state.idx]; elPNow.textContent = state.idx+1; elBtnNext.disabled=true; elBtnSkip.disabled=false; state.hover={A:0,B:0,C:0}; state.startTs=performance.now();
+      const labels=['A','B','C']; elTaskWrap.innerHTML='';
+      task.alts.forEach((alt,i)=>{
+        const label=labels[i]; const div=document.createElement('label'); div.className='choice';
+        div.innerHTML=`<div class="thumb">Ảnh ${label}</div>
+          <div class="attrs">
+            <div>Thương hiệu: <strong>${alt.brand}</strong></div>
+            <div>Pin: <strong>${alt.battery}</strong></div>
+            <div>Khử ồn: <strong>${alt.anc}</strong></div>
+            <div>Giá: <strong class="price">${fmtPrice(alt.price)}</strong></div>
+          </div>
+          <div class="pick"><input type="radio" name="pick" value="${label}"> Chọn phương án ${label}</div>`;
+        div.addEventListener('mouseenter',()=>{ state.hover[label]++; });
+        elTaskWrap.appendChild(div);
+      });
+      const none=document.createElement('label'); none.className='choice none'; none.innerHTML=`<div><div class="pill">Tùy chọn</div><h3>Tôi không chọn sản phẩm nào</h3><div class="pick" style="justify-content:center"><input type="radio" name="pick" value="NONE"> Không chọn</div></div>`; elTaskWrap.appendChild(none);
+      elTaskWrap.addEventListener('change', (e)=>{ if(e.target && e.target.name==='pick'){ elBtnNext.disabled=false; } }, {once:true});
+    }
+
+    elBtnSkip.addEventListener('click', ()=>{ recordResult('SKIP'); goNext(); });
+    elBtnNext.addEventListener('click', ()=>{ const picked=document.querySelector('input[name="pick"]:checked'); if(!picked) return; recordResult(picked.value); goNext(); });
+
+    function recordResult(choice){
+      const task=state.tasks[state.idx]; const dt=Math.round(performance.now()-state.startTs); const sel=['A','B','C'].includes(choice)?choice:null; const none=choice==='NONE'?1:0;
+      const row={ task_id:task.task_id, selected_alt:sel, none, decision_ms:dt, hover_A:state.hover.A, hover_B:state.hover.B, hover_C:state.hover.C,
+        brand_A:task.alts[0].brand, battery_A:task.alts[0].battery, anc_A:task.alts[0].anc, price_A:task.alts[0].price,
+        brand_B:task.alts[1].brand, battery_B:task.alts[1].battery, anc_B:task.alts[1].anc, price_B:task.alts[1].price,
+        brand_C:task.alts[2].brand, battery_C:task.alts[2].battery, anc_C:task.alts[2].anc, price_C:task.alts[2].price };
+      state.results.push(row);
+    }
+
+    function goNext(){ if(state.idx < state.tasks.length-1){ state.idx++; showTask(); } else { switchTab('results'); renderResults(); } }
+
+    // ------------------ RESULTS TAB ------------------
+    const elDoneCount=document.getElementById('doneCount');
+    const elTblBody=document.querySelector('#tblResults tbody');
+    const elBtnJson=document.getElementById('btnDownloadJson');
+    const elBtnCsv=document.getElementById('btnDownloadCsv');
+
+    function renderResults(){ elDoneCount.textContent=state.results.length; elTblBody.innerHTML=''; state.results.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=[ r.task_id, r.selected_alt??'', r.none, r.decision_ms, r.hover_A, r.hover_B, r.hover_C, r.brand_A, r.battery_A, r.anc_A, fmtPrice(r.price_A), r.brand_B, r.battery_B, r.anc_B, fmtPrice(r.price_B), r.brand_C, r.battery_C, r.anc_C, fmtPrice(r.price_C) ].map(x=>`<td>${x}</td>`).join(''); elTblBody.appendChild(tr); }); buildRuleTemplate(); }
+
+    elBtnJson.addEventListener('click', ()=>{ download('results.json', JSON.stringify(state.results,null,2)); });
+    elBtnCsv.addEventListener('click', ()=>{ download('results.csv', toCSV(state.results)); });
+
+    // ------------------ SIMPLE SIMULATOR ------------------
+    const elSimPrice=document.getElementById('simPrice'); const elSimPriceLabel=document.getElementById('simPriceLabel'); const elSimAnc=document.getElementById('simAnc'); const elSimBattery=document.getElementById('simBattery'); const elSimShare=document.getElementById('simShare'); const elSimRev=document.getElementById('simRev');
+    function updateSimulator(){ const p=+elSimPrice.value; elSimPriceLabel.textContent=fmtPrice(p); const me=(elSimAnc.checked?0.5:0)+(elSimBattery.checked?0.4:0)+scorePrice(p); const sony=0.4+0.2+scorePrice(2500000); const apple=0.8+0.0+scorePrice(3500000); const exps=[me,sony,apple].map(x=>Math.exp(x)); const sum=exps.reduce((a,b)=>a+b,0); const share=exps[0]/sum; elSimShare.textContent=(share*100).toFixed(1)+"%"; const rev=share*1000*p; elSimRev.textContent=fmtPrice(Math.round(rev)); }
+    function scorePrice(p){ return -0.0000012*p; }
+    ['input','change'].forEach(ev=>{ elSimPrice.addEventListener(ev,updateSimulator); elSimAnc.addEventListener(ev,updateSimulator); elSimBattery.addEventListener(ev,updateSimulator); });
+
+    // ------------------ PRICING RULE TEMPLATE ------------------
+    const elRule=document.getElementById('ruleOut');
+    function buildRuleTemplate(){ const costs=1000000; const p=+elSimPrice.value; const rule={ pricing_rule:{ cost:costs, suggested_price:p, band:{ lower:Math.round(p*0.96), upper:Math.round(p*1.08)}, constraints:{ weekly_change_pct:0.1 }, notes:'Band mẫu dựa trên mô phỏng toy. Khi có HB/XGB sẽ cập nhật theo WTP & elasticity.' } }; elRule.textContent=yaml(rule); }
+
+    // ------------------ TABS ------------------
+    const tabs=document.querySelectorAll('.tabBtn'); tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+    function switchTab(id){ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); tabs.forEach(b=>b.classList.toggle('active', b.dataset.tab===id)); if(id==='simulator'){ updateSimulator(); } if(id==='pricing'){ buildRuleTemplate(); } }
+
+    // ------------------ UTIL ------------------
+    function fmtPrice(n){ return n.toLocaleString('vi-VN')+"đ"; }
+    function download(filename, text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'})); a.download=filename; a.click(); URL.revokeObjectURL(a.href); }
+    function toCSV(arr){ if(!arr.length) return ''; const keys=Object.keys(arr[0]); const rows=[keys.join(',')].concat(arr.map(o=>keys.map(k=>String(o[k]).replaceAll('"','""')).map(v=>`"${v}"`).join(','))); return rows.join('\n'); }
+    function yaml(obj,indent=0){ const pad='  '.repeat(indent); if(Array.isArray(obj)){ return obj.map(v=>pad+'- '+yaml(v,indent+1).trimStart()).join('\n'); } else if(typeof obj==='object' && obj!==null){ return Object.entries(obj).map(([k,v])=>{ if(typeof v==='object') return `${pad}${k}:\n${yaml(v,indent+1)}`; return `${pad}${k}: ${v}`; }).join('\n'); } else { return pad+String(obj); } }
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+:root{
+    --border:#c9c9c9;
+    --panel:#f9f9f9;
+    --accent:#2563eb;
+}
+
+body{
+    font-family: system-ui, sans-serif;
+    background:#e9eef5;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.wrap{
+    background:white;
+    padding:24px 28px;
+    border:1px solid var(--border);
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    width:400px;
+}
+
+h2{
+    margin:0 0 14px;
+    text-align:center;
+    background:#e4f0e0;
+    padding:8px;
+    font-size:18px;
+}
+
+.calc-table{
+    width:100%;
+    border-collapse:collapse;
+}
+.calc-table td{
+    padding:10px;
+    border:1px solid var(--border);
+}
+.label{
+    width:80px;
+    font-weight:bold;
+    background:#fafafa;
+}
+input[type="number"], input[readonly]{
+    width:94%;
+    padding:8px;
+    border:1px solid var(--border);
+    font-size:15px;
+}
+input[readonly]{
+    background:#fffef7;
+    color:#b30000;
+    font-weight:600;
+}
+.btns{
+    text-align:center;
+    padding:12px;
+}
+button{
+    padding:8px 18px;
+    margin:4px;
+    border:1px solid var(--accent);
+    background:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+button:hover{
+    background:var(--accent);
+    color:white;
+}
+button.ghost{
+    border:1px solid #aaa;
+    color:#555;
+}
+button.ghost:hover{
+    background:#f3f3f3;
+}

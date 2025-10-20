@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>HUYNH NGOC NHU Y - RESULT</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fac2e4;
+            text-align: center;
+        }
+        h2 { color: #b42188; }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            width: 500px;
+        }
+        td, th {
+            border: 1px solid #e712a3;
+            padding: 8px;
+        }
+        th { background-color: #ff75c1; }
+        </style>
+    </head>
+    <body>
+        <h2>Product Summary</h2>
+        <table>
+            <tr><th>Part</th><th>Qty</th><th>Note</th></tr>
+            <tr>
+                <td>C112 - Mouse</td>
+                <td><script>document.write(new URLSearchParams(location.search).get('qty1'));</script></td>
+                <td><script>document.write(new URLSearchParams(location.search).get('item1'));</script></td>
+            </tr>
+            <tr>
+                <td>B124 - Keyboard US</td>
+                <td><script>document.write(new URLSearchParams(location.search).get('qty2'));</script></td>
+                <td><script>document.write(new URLSearchParams(location.search).get('item2'));</script></td>
+            </tr>
+            <tr>
+                <td>U125 - USB KingMax</td>
+                <td><script>document.write(new URLSearchParams(location.search).get('qty3'));</script></td>
+                <td><script>document.write(new URLSearchParams(location.search).get('item3'));</script></td>
+            </tr>
+        </table>
+        <p><b>Total:</b> $
+        <script>
+            document.write(new URLSearchParams(location.search).get('total'));
+        </script></p>
+    </body>
+</html>

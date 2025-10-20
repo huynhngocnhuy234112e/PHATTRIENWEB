@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HUỲNH NGỌC NHƯ Ý TẢI DANH SÁCH SP</title>
+  
+        <script type="text/javascript">
+            datasets = [
+                {
+                    ID: 'P01',
+                    Name: 'coca',
+                    Quantity: 2,
+                    Price: 15,
+                    Photo: 'coca.png'
+                },
+                {
+                    ID: 'P02',
+                    Name: 'pepsi',
+                    Quantity: 3,
+                    Price: 20,
+                    Photo: 'pepsi.png'
+                },
+                {
+                    ID: 'P03',
+                    Name: 'sting',
+                    Quantity: 5,
+                    Price: 17,
+                    Photo: 'sting.png'
+                },
+                {
+                    ID: 'P04',
+                    Name: 'aqua',
+                    Quantity: 8,
+                    Price: 19,
+                    Photo: 'aqua.png'
+                },
+                {
+                    ID: 'P05',
+                    Name: 'lavie',
+                    Quantity: 8,
+                    Price: 12,
+                    Photo: 'lavie.png'
+                }
+            ]
+        </script>
+	</head>
+	<body>
+		<table border="1">
+            <caption>List of Products</caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Photo</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="product_tbody">
+                
+            </tbody>
+        </table>
+        <script type="text/javascript">
+            product_tbody = document.getElementById('product_tbody')
+            for (i=0; i<datasets.length; i++){
+                item=datasets[i]
+                row=document.createElement('tr')
+                td_id=document.createElement('td')
+                td_name=document.createElement('td')
+                td_quantity=document.createElement('td')
+                td_price=document.createElement('td')
+                td_photo=document.createElement('td')
+                td_action=document.createElement('td')
+
+                td_id.innerText=item.ID
+                td_name.innerText=item.Name
+                td_quantity.innerText=item.Quantity
+                td_price.innerText=item.Price
+                td_photo.innerHTML="<...>"
+                td_action.innerHTML="<...>"
+
+                row.appendChild(td_id)
+                row.appendChild(td_name)    
+                row.appendChild(td_quantity)
+                row.appendChild(td_price)
+                row.appendChild(td_photo)
+                row.appendChild(td_action)
+
+                product_tbody.appendChild(row)
+            }
+
+        </script>
+	</body>
+</html>

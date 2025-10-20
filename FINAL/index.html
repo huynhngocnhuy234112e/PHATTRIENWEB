@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KAMA — Search & Filter (Vanilla)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Inline SVG sprite (avoids path/CORS issues). Keep this block! -->
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+      <symbol id="icon-search" viewBox="0 0 24 24"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zm0-2a9 9 0 1 0 5.64 16.03l3.83 3.83 1.41-1.41-3.83-3.83A9 9 0 0 0 11 2z"/></symbol>
+      <symbol id="icon-filter" viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm3 6h4v2h-4v-2z"/></symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24"><path d="M18.3 5.71 12 12l6.3 6.29-1.42 1.42L10.59 13.4 4.29 19.7 2.87 18.3 9.17 12 2.87 5.71 4.29 4.29l6.3 6.3 6.29-6.3 1.42 1.42z"/></symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></symbol>
+    </svg>
+
+    <main class="container">
+      <header class="brand">
+         <div class="header">
+            <img src="IMAGES/LOGO.jpg" alt="KAMA Logo">
+        </div>
+      </header>
+
+      <section class="card shadow">
+        <form id="search-form" class="bar" role="search" aria-label="Tìm kiếm sản phẩm">
+          <div class="input-wrap">
+            <input id="q" class="input" name="q" type="search" placeholder="Tìm kiếm sản phẩm…" autocomplete="off" />
+            <svg class="icon-right"><use href="#icon-search"></use></svg>
+
+            <!-- recent suggestions dropdown -->
+            <div id="recent" class="recent" aria-live="polite" hidden></div>
+          </div>
+
+          <button id="btn-filter" class="btn outline" type="button" aria-expanded="false" aria-controls="filter-panel">
+            <svg class="icon"><use href="#icon-filter"></use></svg>
+            <span class="hide-sm">Bộ lọc</span>
+            <svg class="icon sm chevron"><use href="#icon-chevron"></use></svg>
+          </button>
+
+          <button class="btn solid" type="submit">Tìm</button>
+        </form>
+
+        <div id="chips" class="chips" aria-live="polite"></div>
+        <output id="qs" class="qs" aria-live="polite">Querystring: (trống)</output>
+
+        <!-- Filter dropdown / popover -->
+        <div id="filter-panel" class="dropdown shadow" hidden>
+          <div class="grid-2">
+            <div>
+              <div class="section-title">Thương hiệu</div>
+              <div id="brand-list" class="list"></div>
+            </div>
+            <div>
+              <div class="section-title">Sản phẩm</div>
+              <div id="label-list" class="list"></div>
+            </div>
+          </div>
+          <div class="dropdown-footer">
+            <button id="btn-clear" class="btn ghost" type="button">Xóa</button>
+            <button id="btn-apply" class="btn solid" type="button">Áp dụng</button>
+          </div>
+        </div>
+      </section>
+
+     
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

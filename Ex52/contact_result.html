@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>Huỳnh Ngọc NHƯ Ý - Contact Result </title>
+        <style>
+            body{font-family:Arial, Helvetica, sans-serif;background:#c4c4f6;margin:0;padding:30px 10px;}
+            .card{width:760px;max-width:92%;margin:0 auto;background:#f6eaea;border:1px solid #f8d2d2;border-radius:4px;}
+            .card h2{margin:0;padding:14px 18px;border-bottom:1px solid #c8c8c8;}
+            .row{padding:12px 18px;border-bottom:1px dashed #fadcdc;}
+            .row:last-child{border-bottom:none;}
+            .label{display:inline-block;width:140px;color:#766c6c}
+            .value{font-weight:600}
+            pre{white-space:pre-wrap;word-wrap:break-word;margin:8px 0 0}
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h2>Contact detail</h2>
+            <div class="row"><span class="label">Full name:</span> <span class="value" id="v_name"></span></div>
+            <div class="row"><span class="label">Email:</span> <span class="value" id="v_email"></span></div>
+            <div class="row"><span class="label">Send to:</span> <span class="value" id="v_sendto"></span></div>
+            <div class="row"><span class="label">Title:</span> <span class="value" id="v_title"></span></div>
+            <div class="row">
+                <span class="label">Content:</span>
+                <pre id="v_content"></pre>
+            </div>
+        </div>
+        <script>
+            const q = new URLSearchParams(location.search);
+            const get = (k)=> (q.get(k) ?? '').toString();
+            document.getElementById('v_name').textContent   = get('fullname');
+            document.getElementById('v_email').textContent  = get('email');
+            document.getElementById('v_sendto').textContent = get('sendto');
+            document.getElementById('v_title').textContent  = get('title');
+            document.getElementById('v_content').textContent= get('content');
+        </script>
+    </body>
+</html>

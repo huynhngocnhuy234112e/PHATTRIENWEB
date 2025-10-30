@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Khảo sát Lựa chọn Sản phẩm</title>
+  <style>
+    :root{ --bg:#0e0f14; --panel:#161922; --text:#e9ecf1; --muted:#a8b0be; --border:#242838; --accent:#6ea8ff; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b0c11;color:var(--text)}
+    header{position:sticky;top:0;background:#0b0c11cc;backdrop-filter:blur(6px);border-bottom:1px solid #1a1d2b}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted)}
+    main{padding:20px}
+    .grid{display:grid;gap:12px}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    .panel{background:#111423;border:1px solid var(--border);border-radius:12px;padding:14px}
+    .btn{padding:10px 14px;border:1px solid #2a2e44;border-radius:10px;background:#171a2a;color:#fff;cursor:pointer}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .btn.primary{background:var(--accent);border-color:var(--accent);color:#0b0c11;font-weight:700}
+    .btn.ghost{background:transparent}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .choice{background:#0f1220;border:1px solid #232742;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .thumb{height:90px;border-radius:10px;background:linear-gradient(90deg,#1b1f33,#0f1220);border:1px dashed #2a2f4a;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px}
+    .attrs{font-size:13px}
+    .price{font-weight:800}
+    .pick{display:flex;align-items:center;gap:8px;margin-top:auto}
+    .none{border:1px dashed #2a2f4a;background:transparent;color:var(--muted);text-align:center;justify-content:center}
+    .hidden{display:none}
+    .section-title{margin:0 0 10px;font-size:16px}
+    .pill{display:inline-block;background:#1a1f36;border:1px solid #2a2f4a;border-radius:999px;padding:2px 8px;color:#cbd7ff;font-size:12px}
+    footer{color:var(--muted);text-align:center;padding:30px 0}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tabs button{padding:8px 10px;border-radius:8px;border:1px solid #2a2e44;background:#14172a;color:#cdd7ff}
+    .tabs button.active{background:var(--accent);color:#0b0c11;border-color:var(--accent);font-weight:700}
+    /* Ẩn các tab không phải là khảo sát */
+    .tabs button[data-tab="results"],
+    .tabs button[data-tab="simulator"],
+    .tabs button[data-tab="pricing"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap row">
+      <h1>Khảo sát Lựa chọn Sản phẩm</h1>
+      <span class="muted">Nghiên cứu về sở thích tai nghe</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="tabs">
+      <button class="tabBtn active" data-tab="survey"> Khảo sát</button>
+      </div>
+
+    <section id="survey" class="panel">
+      <h2 class="section-title">Khảo sát lựa chọn (Choice Tasks)</h2>
+      <div class="row">
+        <button id="btnStart" class="btn primary">Bắt đầu khảo sát</button>
+        <div id="progress" class="pill hidden">Tiến độ: <span id="pNow">0</span>/<span id="pTotal">0</span></div>
+      </div>
+      <div id="taskWrap" class="grid cols-3" style="margin-top:12px"></div>
+      <div class="row" style="margin-top:12px">
+        <button id="btnNext" class="btn" disabled>Tiếp tục</button>
+        <button id="btnSkip" class="btn ghost" disabled>Bỏ qua bài này</button>
+      </div>
+    </section>
+
+    <section id="demographics" class="panel hidden">
+      <h2 class="section-title">Thông tin cơ bản</h2>
+      <p class="muted">Vui lòng cung cấp một vài thông tin dưới đây. Dữ liệu này giúp chúng tôi phân tích kết quả tốt hơn và hoàn toàn ẩn danh.</p>
+      
+      <div class="grid cols-3" style="gap: 16px;">
+        <div class="panel">
+          <label for="demo_age">Tuổi của bạn?</label>
+          <input type="number" id="demo_age" placeholder="Ví dụ: 25" style="width:100%; padding: 8px;">
+        </div>
+        
+        <div class="panel">
+          <label for="demo_gender">Giới tính?</label>
+          <select id="demo_gender" style="width:100%; padding: 8px;">
+            <option value="">-- Chọn --</option>
+            <option value="Nam">Nam</option>
+            <option value="Nu">Nữ</option>
+            <option value="Khac">Khác</option>
+          </select>
+        </div>
+
+        <div class="panel">
+          <label for="demo_income">Thu nhập hàng tháng?</label>
+          <select id="demo_income" style="width:100%; padding: 8px;">
+            <option value="">-- Chọn --</option>
+            <option value="<10tr">Dưới 10 triệu</option>
+            <option value="10-20tr">10 - 20 triệu</option>
+            <option value="20-30tr">20 - 30 triệu</option>
+            <option value="30-50tr">30 - 50 triệu</option>
+            <option value=">50tr">Trên 50 triệu</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <button id="btnSubmitAll" class="btn primary">Hoàn tất và Gửi khảo sát</button>
+        <div id="demo_error" class="muted" style="color: #ff8a8a; display: none; margin-top: 10px;">Vui lòng điền đầy đủ 3 trường thông tin.</div>
+      </div>
+    </section>
+
+    <footer class="muted">Mỗi lựa chọn của bạn đều rất quan trọng. Cảm ơn bạn đã giúp chúng tôi cải tiến sản phẩm trong tương lai!</footer>
+  </main>
+
+  <script>
+    // DÁN URL GOOGLE SCRIPT CỦA BẠN VÀO ĐÂY
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/ABC...XYZ/exec';
+
+    // ------------------ DESIGN SPACE ------------------
+    const BRANDS = ["Sony","Apple","Thương hiệu Việt"];
+    const BATTERIES = ["6 giờ","10 giờ","15 giờ"];
+    const ANC = ["Không","Có"];
+    const PRICES = [1500000, 2500000, 3500000];
+
+    function makeDesign(nTasks=10){
+      const tasks=[]; const seen=new Set();
+      for(let t=0;t<nTasks;t++){
+        const alts=[]; let tries=0;
+        while(alts.length<3 && tries<100){ tries++;
+          const alt={
+            brand: BRANDS[Math.floor(Math.random()*BRANDS.length)],
+            battery: BATTERIES[Math.floor(Math.random()*BATTERIES.length)],
+            anc: ANC[Math.floor(Math.random()*ANC.length)],
+            price: PRICES[Math.floor(Math.random()*PRICES.length)],
+          };
+          const key = JSON.stringify(alt);
+          if(![...alts.map(a=>JSON.stringify(a)), ...seen].includes(key)){
+            alts.push(alt); seen.add(key);
+          }
+        }
+        tasks.push({task_id:t+1, alts});
+      }
+      return tasks;
+    }
+
+    // ------------------ SURVEY STATE ------------------
+    const state={ tasks:[], idx:0, startTs:null, hover:{A:0,B:0,C:0}, results:[], session_id: null };
+
+    const elTaskWrap = document.getElementById('taskWrap');
+    const elBtnStart = document.getElementById('btnStart');
+    const elBtnNext  = document.getElementById('btnNext');
+    const elBtnSkip  = document.getElementById('btnSkip');
+    const elPNow = document.getElementById('pNow');
+    const elPTotal = document.getElementById('pTotal');
+    const elProgress = document.getElementById('progress');
+
+    elBtnStart.addEventListener('click', ()=>{
+      state.tasks = makeDesign(10);
+      state.idx = 0;
+      state.results = [];
+      state.session_id = 'user_' + Date.now() + Math.random().toString(36).substring(2, 9);
+      elPTotal.textContent = state.tasks.length;
+      elProgress.classList.remove('hidden');
+      elBtnStart.style.display = 'none'; // Ẩn nút Bắt đầu
+      showTask();
+    });
+
+    function showTask(){
+      const task = state.tasks[state.idx];
+      elPNow.textContent = state.idx+1;
+      elBtnNext.disabled = true;
+      elBtnSkip.disabled = false;
+      state.hover = {A:0,B:0,C:0};
+      state.startTs = performance.now();
+      const labels = ['A','B','C'];
+      elTaskWrap.innerHTML = '';
+      
+      task.alts.forEach((alt,i)=>{
+        const label=labels[i];
+        const div=document.createElement('label');
+        div.className='choice';
+        div.innerHTML=`<div class="thumb">Ảnh ${label}</div>
+          <div class="attrs">
+            <div>Thương hiệu: <strong>${alt.brand}</strong></div>
+            <div>Pin: <strong>${alt.battery}</strong></div>
+            <div>Khử ồn: <strong>${alt.anc}</strong></div>
+            <div>Giá: <strong class="price">${fmtPrice(alt.price)}</strong></div>
+          </div>
+          <div class="pick"><input type="radio" name="pick" value="${label}"> Chọn phương án ${label}</div>`;
+        div.addEventListener('mouseenter',()=>{ state.hover[label]++; });
+        elTaskWrap.appendChild(div);
+      });
+      
+      const none=document.createElement('label');
+      none.className='choice none';
+      none.innerHTML=`<div><div class="pill">Tùy chọn</div><h3>Tôi không chọn sản phẩm nào</h3><div class="pick" style="justify-content:center"><input type="radio" name="pick" value="NONE"> Không chọn</div></div>`;
+      elTaskWrap.appendChild(none);
+      
+      elTaskWrap.addEventListener('change', (e)=>{
+        if(e.target && e.target.name==='pick'){ elBtnNext.disabled=false; }
+      }, {once:true});
+    }
+
+    elBtnSkip.addEventListener('click', ()=>{ recordResult('SKIP'); goNext(); });
+    elBtnNext.addEventListener('click', ()=>{
+      const picked=document.querySelector('input[name="pick"]:checked');
+      if(!picked) return;
+      recordResult(picked.value);
+      goNext();
+    });
+
+    function recordResult(choice){
+      const task = state.tasks[state.idx];
+      const dt = Math.round(performance.now() - state.startTs);
+      const sel = ['A','B','C'].includes(choice) ? choice : null;
+      const none = choice === 'NONE' ? 1 : 0;
+      const skip = choice === 'SKIP' ? 1 : 0; // Ghi nhận cả skip
+
+      const row = {
+        session_id: state.session_id,
+        task_id: task.task_id,
+        selected_alt: sel,
+        none: none,
+        skip: skip, // Thêm cột skip
+        decision_ms: dt,
+        hover_A: state.hover.A, hover_B: state.hover.B, hover_C: state.hover.C,
+        brand_A: task.alts[0].brand, battery_A: task.alts[0].battery, anc_A: task.alts[0].anc, price_A: task.alts[0].price,
+        brand_B: task.alts[1].brand, battery_B: task.alts[1].battery, anc_B: task.alts[1].anc, price_B: task.alts[1].price,
+        brand_C: task.alts[2].brand, battery_C: task.alts[2].battery, anc_C: task.alts[2].anc, price_C: task.alts[2].price
+      };
+      
+      state.results.push(row);
+    }
+
+    function goNext(){
+      if(state.idx < state.tasks.length - 1){
+        state.idx++;
+        showTask();
+      } else {
+        // Đã kết thúc khảo sát lựa chọn
+        document.getElementById('survey').classList.add('hidden');
+        document.getElementById('demographics').classList.remove('hidden');
+        elProgress.classList.add('hidden');
+      }
+    }
+
+    // ------------------ DEMOGRAPHICS & SUBMIT ------------------
+    const elDemoForm = document.getElementById('demographics');
+    const elBtnSubmitAll = document.getElementById('btnSubmitAll');
+    const elDemoError = document.getElementById('demo_error');
+    const elDemoAge = document.getElementById('demo_age');
+    const elDemoGender = document.getElementById('demo_gender');
+    const elDemoIncome = document.getElementById('demo_income');
+
+    elBtnSubmitAll.addEventListener('click', () => {
+      const age = elDemoAge.value;
+      const gender = elDemoGender.value;
+      const income = elDemoIncome.value;
+
+      if (!age || !gender || !income) {
+        elDemoError.style.display = 'block';
+        return;
+      }
+      elDemoError.style.display = 'none';
+      elBtnSubmitAll.disabled = true;
+      elBtnSubmitAll.textContent = 'Đang gửi...';
+
+      const fullData = state.results.map(row => {
+        return {
+          ...row, 
+          demo_age: age,
+          demo_gender: gender,
+          demo_income: income
+        };
+      });
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fullData)
+      })
+      .finally(() => {
+        // Luôn luôn cảm ơn, bất kể gửi thành công hay thất bại
+        console.log('Data submission attempted');
+        showThankYou();
+      });
+    });
+
+    function showThankYou() {
+      elDemoForm.innerHTML = `<div class="panel" style="text-align: center; padding: 30px;">
+        <h2>Cảm ơn bạn đã hoàn thành!</h2>
+        <p class="muted">Các lựa chọn của bạn đã được ghi lại thành công.</p>
+      </div>`;
+      document.querySelector('.tabs').style.display = 'none';
+    }
+
+    // ------------------ UTIL ------------------
+    function fmtPrice(n){ return n.toLocaleString('vi-VN')+"đ"; }
+
+  </script>
+</body>
+</html>

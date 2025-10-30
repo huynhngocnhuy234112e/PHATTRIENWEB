@@ -1,0 +1,140 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>learn_education_vnexpress - HOANG HUNG K31HP</title>
+    <script type="text/javascript">
+      // URL RSS gốc
+      FEED_URL = 'https://vnexpress.net/rss/giao-duc.rss'
+      // Dùng proxy CORS để trình duyệt cho phép tải RSS
+      // (AllOrigins trả về raw content và đã set CORS)
+      PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED_URL)
+
+      function get_vnexpress_api()
+      {
+        xhr = new XMLHttpRequest()
+        xhr.open('get', PROXY_URL, true)
+        xhr.send()
+        xhr.onreadystatechange = function()
+        {
+          if (xhr.readyState==4)
+          {
+            if (xhr.status==200)
+            {
+              // giống bài mẫu: show raw response
+              string_xml = xhr.responseText
+              my_div.innerText = string_xml
+
+              // parse XML vì nguồn là RSS
+              xml = xhr.responseXML
+              if (!xml) {
+                parser = new DOMParser()
+                xml = parser.parseFromString(string_xml, "application/xml")
+              }
+
+              items = xml.getElementsByTagName('item')
+              display_news(items)
+            }
+            else
+            {
+              my_div.innerText = 'HTTP error: ' + xhr.status + ' (có thể do CORS/proxy)'
+            }
+          }
+        }
+
+        xhr.onerror = function() {
+          my_div.innerText = 'Request error (network/CORS).'
+        }
+      }
+
+      // lấy ảnh "icon" từ <enclosure>, fallback ảnh trong <description>
+      function get_icon_url(itemNode)
+      {
+        encl = itemNode.getElementsByTagName('enclosure')
+        if (encl && encl.length > 0) {
+          u = encl[0].getAttribute('url')
+          if (u) return u
+        }
+        descNode = itemNode.getElementsByTagName('description')[0]
+        if (descNode) {
+          html = descNode.textContent || descNode.innerHTML || ""
+          m = html.match(/<img[^>]+src="([^"]+)"/i)
+          if (m && m[1]) return m[1]
+        }
+        return ""
+      }
+
+      function display_news(items)
+      {
+        for (i=0; i<items.length; i++)
+        {
+          item = items[i]
+
+          titleNode = item.getElementsByTagName('title')[0]
+          linkNode  = item.getElementsByTagName('link')[0]
+          dateNode  = item.getElementsByTagName('pubDate')[0]
+
+          title = titleNode ? titleNode.textContent : ''
+          link  = linkNode  ? linkNode.textContent  : '#'
+          date  = dateNode  ? dateNode.textContent  : ''
+
+          icon_url = get_icon_url(item)
+
+          tr = document.createElement('tr')
+
+          td_title = document.createElement('td')
+          td_date  = document.createElement('td')
+          td_icon  = document.createElement('td')
+          td_link  = document.createElement('td')
+
+          td_title.innerText = title
+          td_date.innerText  = date
+
+          if (icon_url) {
+            img_icon = document.createElement('img')
+            img_icon.setAttribute('src', icon_url)
+            img_icon.setAttribute('alt', 'icon')
+            img_icon.style.maxWidth = '120px'
+            img_icon.style.height = 'auto'
+            td_icon.appendChild(img_icon)
+          } else {
+            td_icon.innerText = ''
+          }
+
+          a = document.createElement('a')
+          a.setAttribute('href', link)
+          a.setAttribute('target', '_blank')
+          a.innerText = 'Xem bài'
+          td_link.appendChild(a)
+
+          tr.appendChild(td_title)
+          tr.appendChild(td_date)
+          tr.appendChild(td_icon)
+          tr.appendChild(td_link)
+
+          news_tbody.appendChild(tr)
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Raw response như bài mẫu của thầy -->
+    <div id="my_div" style="height:150px;overflow-y: scroll; background-color: antiquewhite"></div>
+
+    <table border="1" width="100%">
+      <caption>Education (VnExpress):</caption>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>PubDate</th>
+          <th>Icon</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody id="news_tbody"></tbody>
+    </table>
+
+    <script type="text/javascript">
+      get_vnexpress_api()
+    </script>
+  </body>
+</html>

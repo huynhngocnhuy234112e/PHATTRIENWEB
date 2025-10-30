@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Headphone Choice – Smart Pricing Prototype</title>
+  <title>Admin Dashboard – Smart Pricing Prototype</title>
   <style>
     :root{ --bg:#0e0f14; --panel:#161922; --text:#e9ecf1; --muted:#a8b0be; --border:#242838; --accent:#6ea8ff; }
     *{box-sizing:border-box}
@@ -40,11 +40,7 @@
     .tabs{display:flex;gap:8px;margin-bottom:12px}
     .tabs button{padding:8px 10px;border-radius:8px;border:1px solid #2a2e44;background:#14172a;color:#cdd7ff}
     .tabs button.active{background:var(--accent);color:#0b0c11;border-color:var(--accent);font-weight:700}
-    .tabs button[data-tab="results"],
-    .tabs button[data-tab="simulator"],
-    .tabs button[data-tab="pricing"] {
-      display: none;
-    }
+    /* KHÔNG ẨN TAB NÀO */
   </style>
 </head>
 <body>
@@ -57,13 +53,12 @@
 
   <main class="wrap">
     <div class="tabs">
-      <button class="tabBtn active" data-tab="survey"> Khảo sát</button>
-      <button class="tabBtn" data-tab="results">Kết quả</button>
-      <button class="tabBtn" data-tab="simulator"> Mô phỏng</button>
-      <button class="tabBtn" data-tab="pricing">Quy tắc giá</button>
+      <button class="tabBtn active" data-tab="survey">1) Khảo sát</button>
+      <button class="tabBtn" data-tab="results">2) Kết quả</button>
+      <button class="tabBtn" data-tab="simulator">3) Mô phỏng</button>
+      <button class="tabBtn" data-tab="pricing">4) Quy tắc giá</button>
     </div>
 
-    <!-- TAB 1: SURVEY -->
     <section id="survey" class="panel">
       <h2 class="section-title">Khảo sát lựa chọn (Choice Tasks)</h2>
       <div class="row">
@@ -76,46 +71,7 @@
         <button id="btnSkip" class="btn ghost" disabled>Bỏ qua bài này</button>
       </div>
     </section>
-    <section id="demographics" class="panel hidden">
-      <h2 class="section-title">Thông tin cơ bản</h2>
-      <p class="muted">Vui lòng cung cấp một vài thông tin dưới đây. Dữ liệu này giúp chúng tôi phân tích kết quả tốt hơn và hoàn toàn ẩn danh.</p>
-      
-      <div class="grid cols-3" style="gap: 16px;">
-        <div class="panel">
-          <label for="demo_age">Tuổi của bạn?</label>
-          <input type="number" id="demo_age" placeholder="Ví dụ: 25" style="width:100%; padding: 8px;">
-        </div>
-        
-        <div class="panel">
-          <label for="demo_gender">Giới tính?</label>
-          <select id="demo_gender" style="width:100%; padding: 8px;">
-            <option value="">-- Chọn --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nu">Nữ</option>
-            <option value="Khac">Khác</option>
-          </select>
-        </div>
 
-        <div class="panel">
-          <label for="demo_income">Thu nhập hàng tháng?</label>
-          <select id="demo_income" style="width:100%; padding: 8px;">
-            <option value="">-- Chọn --</option>
-            <option value="<10tr">Dưới 10 triệu</option>
-            <option value="10-20tr">10 - 20 triệu</option>
-            <option value="20-30tr">20 - 30 triệu</option>
-            <option value="30-50tr">30 - 50 triệu</option>
-            <option value=">50tr">Trên 50 triệu</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="margin-top: 20px;">
-        <button id="btnSubmitAll" class="btn primary">Hoàn tất và Gửi khảo sát</button>
-        <div id="demo_error" class="muted" style="color: #ff8a8a; display: none; margin-top: 10px;">Vui lòng điền đầy đủ 3 trường thông tin.</div>
-      </div>
-    </section>
-
-    <!-- TAB 2: RESULTS -->
     <section id="results" class="panel hidden">
       <h2 class="section-title">Kết quả thu thập (tải xuống JSON/CSV)</h2>
       <div class="row" style="margin-bottom:10px">
@@ -139,7 +95,6 @@
       </div>
     </section>
 
-    <!-- TAB 3: SIMPLE SIMULATOR (toy) -->
     <section id="simulator" class="panel hidden">
       <h2 class="section-title">Mô phỏng thị phần (đơn giản)</h2>
       <div class="grid cols-3">
@@ -167,12 +122,13 @@
       </div>
     </section>
 
-    <!-- TAB 4: PRICING RULE (static template) -->
     <section id="pricing" class="panel hidden">
       <h2 class="section-title">Quy tắc định giá (mẫu xuất bản giao)</h2>
       <pre id="ruleOut" style="white-space:pre-wrap"></pre>
     </section>
-    <footer class="muted">Mỗi lựa chọn của bạn đều rất quan trọng. Cảm ơn bạn đã giúp chúng tôi tiến gần hơn với kết quả nghiên cứu trong tương lai!</footer>  </main>
+    
+    <footer class="muted">Prototype: thao tác được, không cần backend. Dùng để demo luồng: thu thập → xem dữ liệu → mô phỏng → xuất rule.</footer>
+  </main>
 
   <script>
     // ------------------ DESIGN SPACE ------------------
@@ -205,6 +161,7 @@
     // ------------------ SURVEY STATE ------------------
     const state={ tasks:[], idx:0, startTs:null, hover:{A:0,B:0,C:0}, results:[] };
 
+    // Khai báo biến cho TAB 1
     const elTaskWrap = document.getElementById('taskWrap');
     const elBtnStart = document.getElementById('btnStart');
     const elBtnNext  = document.getElementById('btnNext');
@@ -212,14 +169,37 @@
     const elPNow = document.getElementById('pNow');
     const elPTotal = document.getElementById('pTotal');
     const elProgress = document.getElementById('progress');
+    
+    // Khai báo biến cho TAB 2
+    const elBtnJson = document.getElementById('btnDownloadJson');
+    const elBtnCsv = document.getElementById('btnDownloadCsv');
+    const elTblBody = document.getElementById('tblResults').querySelector('tbody');
+    const elDoneCount = document.getElementById('doneCount');
 
-    elBtnStart.addEventListener('click', ()=>{ state.tasks=makeDesign(10); state.idx=0; state.results=[]; elPTotal.textContent=state.tasks.length; elProgress.classList.remove('hidden'); showTask(); });
+    elBtnStart.addEventListener('click', ()=>{
+      state.tasks = makeDesign(10);
+      state.idx = 0;
+      state.results = [];
+      elPTotal.textContent = state.tasks.length;
+      elProgress.classList.remove('hidden');
+      elBtnStart.style.display = 'none'; // Ẩn nút Bắt đầu
+      showTask();
+    });
 
     function showTask(){
-      const task = state.tasks[state.idx]; elPNow.textContent = state.idx+1; elBtnNext.disabled=true; elBtnSkip.disabled=false; state.hover={A:0,B:0,C:0}; state.startTs=performance.now();
-      const labels=['A','B','C']; elTaskWrap.innerHTML='';
+      const task = state.tasks[state.idx];
+      elPNow.textContent = state.idx+1;
+      elBtnNext.disabled = true;
+      elBtnSkip.disabled = false;
+      state.hover = {A:0,B:0,C:0};
+      state.startTs = performance.now();
+      const labels = ['A','B','C'];
+      elTaskWrap.innerHTML = '';
+      
       task.alts.forEach((alt,i)=>{
-        const label=labels[i]; const div=document.createElement('label'); div.className='choice';
+        const label=labels[i];
+        const div=document.createElement('label');
+        div.className='choice';
         div.innerHTML=`<div class="thumb">Ảnh ${label}</div>
           <div class="attrs">
             <div>Thương hiệu: <strong>${alt.brand}</strong></div>
@@ -231,42 +211,44 @@
         div.addEventListener('mouseenter',()=>{ state.hover[label]++; });
         elTaskWrap.appendChild(div);
       });
-      const none=document.createElement('label'); none.className='choice none'; none.innerHTML=`<div><div class="pill">Tùy chọn</div><h3>Tôi không chọn sản phẩm nào</h3><div class="pick" style="justify-content:center"><input type="radio" name="pick" value="NONE"> Không chọn</div></div>`; elTaskWrap.appendChild(none);
-      elTaskWrap.addEventListener('change', (e)=>{ if(e.target && e.target.name==='pick'){ elBtnNext.disabled=false; } }, {once:true});
+      
+      const none=document.createElement('label');
+      none.className='choice none';
+      none.innerHTML=`<div><div class="pill">Tùy chọn</div><h3>Tôi không chọn sản phẩm nào</h3><div class="pick" style="justify-content:center"><input type="radio" name="pick" value="NONE"> Không chọn</div></div>`;
+      elTaskWrap.appendChild(none);
+      
+      elTaskWrap.addEventListener('change', (e)=>{
+        if(e.target && e.target.name==='pick'){ elBtnNext.disabled=false; }
+      }, {once:true});
     }
 
     elBtnSkip.addEventListener('click', ()=>{ recordResult('SKIP'); goNext(); });
-    elBtnNext.addEventListener('click', ()=>{ const picked=document.querySelector('input[name="pick"]:checked'); if(!picked) return; recordResult(picked.value); goNext(); });
-    elBtnStart.addEventListener('click', ()=>{
-      state.tasks = makeDesign(10);
-      state.idx = 0;
-      state.results = [];
-      // TẠO MỘT MÃ DUY NHẤT CHO PHIÊN NÀY
-      state.session_id = 'user_' + Date.now() + Math.random().toString(36).substring(2, 9);
-      elPTotal.textContent = state.tasks.length;
-      elProgress.classList.remove('hidden');
-      showTask();
-  });
-    // SỬA LẠI HÀM NÀY
+    elBtnNext.addEventListener('click', ()=>{
+      const picked=document.querySelector('input[name="pick"]:checked');
+      if(!picked) return;
+      recordResult(picked.value);
+      goNext();
+    });
+
     function recordResult(choice){
       const task = state.tasks[state.idx];
       const dt = Math.round(performance.now() - state.startTs);
       const sel = ['A','B','C'].includes(choice) ? choice : null;
       const none = choice === 'NONE' ? 1 : 0;
+      const skip = choice === 'SKIP' ? 1 : 0;
 
       const row = {
-        session_id: state.session_id, // Thêm session_id
         task_id: task.task_id,
         selected_alt: sel,
         none: none,
+        skip: skip,
         decision_ms: dt,
         hover_A: state.hover.A, hover_B: state.hover.B, hover_C: state.hover.C,
         brand_A: task.alts[0].brand, battery_A: task.alts[0].battery, anc_A: task.alts[0].anc, price_A: task.alts[0].price,
         brand_B: task.alts[1].brand, battery_B: task.alts[1].battery, anc_B: task.alts[1].anc, price_B: task.alts[1].price,
         brand_C: task.alts[2].brand, battery_C: task.alts[2].battery, anc_C: task.alts[2].anc, price_C: task.alts[2].price
       };
-
-      // Chỉ lưu vào state, KHÔNG fetch() ở đây
+      
       state.results.push(row);
     }
 
@@ -275,112 +257,98 @@
         state.idx++;
         showTask();
       } else {
-        // ĐÃ KẾT THÚC KHẢO SÁT LỰA CHỌN
-        // Chuyển sang tab điền thông tin cá nhân
-        switchTab('demographics'); 
+        // Đã kết thúc, chuyển sang tab Kết quả
+        switchTab('results');
         elBtnNext.disabled = true;
         elBtnSkip.disabled = true;
         elProgress.classList.add('hidden');
-        document.getElementById('btnStart').style.display = 'none';
       }
     }
-    function showThankYou() {
-      elTaskWrap.innerHTML = `<div class="panel" style="grid-column: 1 / -1; text-align: center; padding: 30px;">
-        <h2>Cảm ơn bạn đã hoàn thành!</h2>
-        <p class="muted">Các lựa chọn của bạn đã được ghi lại.</p>
-      </div>`;
-      // Vô hiệu hóa các nút
-      elBtnNext.disabled = true;
-      elBtnSkip.disabled = true;
-      elProgress.classList.add('hidden');
-      document.getElementById('btnStart').style.display = 'none'; // Ẩn nút "Bắt đầu"
-    }
-    function renderResults(){ elDoneCount.textContent=state.results.length; elTblBody.innerHTML=''; state.results.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=[ r.task_id, r.selected_alt??'', r.none, r.decision_ms, r.hover_A, r.hover_B, r.hover_C, r.brand_A, r.battery_A, r.anc_A, fmtPrice(r.price_A), r.brand_B, r.battery_B, r.anc_B, fmtPrice(r.price_B), r.brand_C, r.battery_C, r.anc_C, fmtPrice(r.price_C) ].map(x=>`<td>${x}</td>`).join(''); elTblBody.appendChild(tr); }); buildRuleTemplate(); }
 
+    // ------------------ TAB 2: RESULTS ------------------
+    function renderResults(){
+      elDoneCount.textContent = state.results.length;
+      elTblBody.innerHTML = '';
+      state.results.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = [
+          r.task_id, r.selected_alt??'', r.none, r.decision_ms,
+          r.hover_A, r.hover_B, r.hover_C,
+          r.brand_A, r.battery_A, r.anc_A, fmtPrice(r.price_A),
+          r.brand_B, r.battery_B, r.anc_B, fmtPrice(r.price_B),
+          r.brand_C, r.battery_C, r.anc_C, fmtPrice(r.price_C)
+        ].map(x=>`<td>${x}</td>`).join('');
+        elTblBody.appendChild(tr);
+      });
+      buildRuleTemplate(); // Cập nhật luôn tab 4
+    }
     elBtnJson.addEventListener('click', ()=>{ download('results.json', JSON.stringify(state.results,null,2)); });
     elBtnCsv.addEventListener('click', ()=>{ download('results.csv', toCSV(state.results)); });
 
-    // ------------------ SIMPLE SIMULATOR ------------------
-    const elSimPrice=document.getElementById('simPrice'); const elSimPriceLabel=document.getElementById('simPriceLabel'); const elSimAnc=document.getElementById('simAnc'); const elSimBattery=document.getElementById('simBattery'); const elSimShare=document.getElementById('simShare'); const elSimRev=document.getElementById('simRev');
-    function updateSimulator(){ const p=+elSimPrice.value; elSimPriceLabel.textContent=fmtPrice(p); const me=(elSimAnc.checked?0.5:0)+(elSimBattery.checked?0.4:0)+scorePrice(p); const sony=0.4+0.2+scorePrice(2500000); const apple=0.8+0.0+scorePrice(3500000); const exps=[me,sony,apple].map(x=>Math.exp(x)); const sum=exps.reduce((a,b)=>a+b,0); const share=exps[0]/sum; elSimShare.textContent=(share*100).toFixed(1)+"%"; const rev=share*1000*p; elSimRev.textContent=fmtPrice(Math.round(rev)); }
-    function scorePrice(p){ return -0.0000012*p; }
-    ['input','change'].forEach(ev=>{ elSimPrice.addEventListener(ev,updateSimulator); elSimAnc.addEventListener(ev,updateSimulator); elSimBattery.addEventListener(ev,updateSimulator); });
+    // ------------------ TAB 3: SIMPLE SIMULATOR ------------------
+    const elSimPrice=document.getElementById('simPrice');
+    const elSimPriceLabel=document.getElementById('simPriceLabel');
+    const elSimAnc=document.getElementById('simAnc');
+    const elSimBattery=document.getElementById('simBattery');
+    const elSimShare=document.getElementById('simShare');
+    const elSimRev=document.getElementById('simRev');
+    
+    function updateSimulator(){
+      const p = +elSimPrice.value;
+      elSimPriceLabel.textContent = fmtPrice(p);
+      const me = (elSimAnc.checked ? 0.5 : 0) + (elSimBattery.checked ? 0.4 : 0) + scorePrice(p);
+      const sony = 0.4 + 0.2 + scorePrice(2500000);
+      const apple = 0.8 + 0.0 + scorePrice(3500000);
+      const exps = [me, sony, apple].map(x => Math.exp(x));
+      const sum = exps.reduce((a, b) => a + b, 0);
+      const share = exps[0] / sum;
+      elSimShare.textContent = (share * 100).toFixed(1) + "%";
+      const rev = share * 1000 * p;
+      elSimRev.textContent = fmtPrice(Math.round(rev));
+    }
+    function scorePrice(p){ return -0.0000012 * p; }
+    ['input','change'].forEach(ev=>{
+      elSimPrice.addEventListener(ev, updateSimulator);
+      elSimAnc.addEventListener(ev, updateSimulator);
+      elSimBattery.addEventListener(ev, updateSimulator);
+    });
 
-    // ------------------ PRICING RULE TEMPLATE ------------------
+    // ------------------ TAB 4: PRICING RULE TEMPLATE ------------------
     const elRule=document.getElementById('ruleOut');
-    function buildRuleTemplate(){ const costs=1000000; const p=+elSimPrice.value; const rule={ pricing_rule:{ cost:costs, suggested_price:p, band:{ lower:Math.round(p*0.96), upper:Math.round(p*1.08)}, constraints:{ weekly_change_pct:0.1 }, notes:'Band mẫu dựa trên mô phỏng toy. Khi có HB/XGB sẽ cập nhật theo WTP & elasticity.' } }; elRule.textContent=yaml(rule); }
+    function buildRuleTemplate(){
+      const costs = 1000000;
+      const p = +elSimPrice.value;
+      const rule = {
+        pricing_rule: {
+          cost: costs,
+          suggested_price: p,
+          band: { lower: Math.round(p * 0.96), upper: Math.round(p * 1.08) },
+          constraints: { weekly_change_pct: 0.1 },
+          notes: 'Band mẫu dựa trên mô phỏng toy. Khi có HB/XGB sẽ cập nhật theo WTP & elasticity.'
+        }
+      };
+      elRule.textContent = yaml(rule);
+    }
 
     // ------------------ TABS ------------------
+    const tabs=document.querySelectorAll('.tabBtn');
+    tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
     
-    const tabs=document.querySelectorAll('.tabBtn'); tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
     function switchTab(id){
       document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
       tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+      
       if(id==='simulator'){ updateSimulator(); } 
       if(id==='pricing'){ buildRuleTemplate(); } 
-      if(id==='results'){ renderResults(); } // Cập nhật luôn hàm này
+      if(id==='results'){ renderResults(); }
     }
+    
     // ------------------ UTIL ------------------
     function fmtPrice(n){ return n.toLocaleString('vi-VN')+"đ"; }
     function download(filename, text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'})); a.download=filename; a.click(); URL.revokeObjectURL(a.href); }
     function toCSV(arr){ if(!arr.length) return ''; const keys=Object.keys(arr[0]); const rows=[keys.join(',')].concat(arr.map(o=>keys.map(k=>String(o[k]).replaceAll('"','""')).map(v=>`"${v}"`).join(','))); return rows.join('\n'); }
     function yaml(obj,indent=0){ const pad='  '.repeat(indent); if(Array.isArray(obj)){ return obj.map(v=>pad+'- '+yaml(v,indent+1).trimStart()).join('\n'); } else if(typeof obj==='object' && obj!==null){ return Object.entries(obj).map(([k,v])=>{ if(typeof v==='object') return `${pad}${k}:\n${yaml(v,indent+1)}`; return `${pad}${k}: ${v}`; }).join('\n'); } else { return pad+String(obj); } }
-    const elDemoForm = document.getElementById('demographics');
-    const elBtnSubmitAll = document.getElementById('btnSubmitAll');
-    const elDemoError = document.getElementById('demo_error');
-    const elDemoAge = document.getElementById('demo_age');
-    const elDemoGender = document.getElementById('demo_gender');
-    const elDemoIncome = document.getElementById('demo_income');
-
-    elBtnSubmitAll.addEventListener('click', () => {
-      const age = elDemoAge.value;
-      const gender = elDemoGender.value;
-      const income = elDemoIncome.value;
-
-      if (!age || !gender || !income) {
-        elDemoError.style.display = 'block';
-        return;
-      }
-      elDemoError.style.display = 'none';
-      elBtnSubmitAll.disabled = true;
-      elBtnSubmitAll.textContent = 'Đang gửi...';
-
-      const fullData = state.results.map(row => {
-        return {
-          ...row, 
-          demo_age: age,
-          demo_gender: gender,
-          demo_income: income
-        };
-      });
-
-      fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(fullData) // Gửi cả mảng dữ liệu
-      })
-      .then(response => {
-        console.log('Data sent successfully');
-        // 4. Hiển thị cảm ơn
-        showThankYou();
-      })
-      .catch(error => {
-        console.error('Error sending data:', error);
-        showThankYou(); 
-      });
-    });
-
-    function showThankYou() {
-      elDemoForm.innerHTML = `<div class="panel" style="text-align: center; padding: 30px;">
-        <h2>Cảm ơn bạn đã hoàn thành!</h2>
-        <p class="muted">Các lựa chọn của bạn đã được ghi lại thành công.</p>
-      </div>`;
-      document.querySelector('.tabs').style.display = 'none';
-    }
   </script>
 </body>
 </html>

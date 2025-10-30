@@ -1,0 +1,82 @@
+<html>
+	<head>
+		<title>
+			tieu de - PHAM VI ANH K234111423
+		</title>
+        <script type="text/javascript">
+            function get_weather_api()
+            {
+                xhr = new XMLHttpRequest()
+                xhr.open('get', 'https://webapi.dantri.com.vn/misc', true)
+                xhr.send()
+                xhr.onreadystatechange = function()
+                {
+                    if (xhr.readyState==4 && xhr.status==200)
+                    {
+                        string_json = xhr.responseText
+                        my_div.innerText = string_json
+                        //convert string to object
+                        object_json = JSON.parse(string_json)
+                        weathers = object_json.weathers
+
+                        display_weather(weathers)
+                    }
+                }
+            }
+            function display_weather(weathers)
+            {
+                for (i=0; i<weathers.length; i++)
+                {
+                    weather = weathers[i]
+                    tr = document.createElement('tr')
+
+                    td_city = document.createElement('td')
+                    td_temp = document.createElement('td')
+                    td_status = document.createElement('td')
+                    td_icon = document.createElement('td')
+
+                    td_city.innerText = weather.name
+                    td_temp.innerText = weather.temperature
+                    td_status.innerText = weather.clouds
+                    //td_icon.innerText = weather.icon
+                    icon = 'https://openweathermap.org/img/wn'+weather.icon+'@2x.png'
+                    img_icon = document.createElement('img')
+                    img_icon.setAttribute('src', icon)
+                    td_icon.appendChild(img_icon)
+                    
+                    tr.appendChild(td_city)
+                    tr.appendChild(td_temp)
+                    tr.appendChild(td_status)
+                    tr.appendChild(td_icon)
+
+                    weather_tbody.appendChild(tr)
+                }
+            }
+        </script>
+	</head>
+	<body>
+        <div id="my_div" style="height:150px;overflow-y: scroll; background-color: antiquewhite">
+
+        </div>
+
+		<table border="1">
+            <caption>
+                Weathers:
+            </caption>
+                <thead>
+                    <tr>
+                        <th>City Province</th>
+                        <th>Temperature</th>
+                        <th>Status</th>
+                        <th>Icon</th>
+                    </tr>
+                </thead>
+                <tbody id="weather_tbody">
+
+                </tbody>
+        </table>
+        <script type="text/javascript">
+            get_weather_api()
+        </script>
+	</body>
+</html>
